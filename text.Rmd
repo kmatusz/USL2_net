@@ -1,0 +1,82 @@
+---
+title: "Untitled"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+## Dimension Reduction techniques in graph analysis
+## Intro
+
+Not all data can be easily presented as a table with rows representing observations and columns concrete variables. 
+
+
+There are two classical ways of storing network data. One of them is an adjacency matrix, in which each row and column repesents one node (vertex), and in each cell of the matrix there is either 1 (vertices are connected) and 0 (vertices are not connected). 
+
+It is non-trivial to obtain any insight from such setting. After presenting the graph as an adjacency matrix, it is tempting to follow standard data analysis path from this point, treating each row as an observation and each column as a feature. However, there are two problems with such setting. First thing is that this is a very high-dimensional data. Number of features is equal to number of vertices in the graph, thus for a graph with n vertices we get n x n matrix. For sparse graphs (with much more vertices than edges) the matrix contains mostly zeros.
+
+Other, non-trivial mistake present in this method is that from adjacency matrix one can obtain an information only about closest neighbour. In most cases, even not direct neighboring can carry important information about particular node.
+
+Plotting the graph is actually a dimension reduction problem. Optimal placement of the vertices is mapping complex structure into 2-dimensional space.
+
+
+There are some good defined criteria what constitutes a good graph visualisation. (Drawing Graphs: Methods and Models (Lecture Notes inComputer Science).M. Kaufmann and D. Wagner). The most important ones are:
+
+1. Minimisation of edge crossings
+2. Even distribution of the elements
+3. Minimisation of edges lenghth
+4. Finding and preservation of symmetry between subgroups of nodes (displaying similar areas of the graph in the same way).
+
+
+
+There is a family of graph layout creation techniques that give a good result called force-directed. An underlying process for such techniques gets the inspiration from real-world physical systems. In the simulation, vertices are particles which are detracting (...!) each other, and the edges act like an elastic spring that is attracting particles to each other. 
+Below I have included a simple demonstration of such system. After dragging highlighted vertice other ones adjust to change.
+
+There are two most widespread force-directed layouts: Fruchterman and Reingold algorithm, and Kamanda-Kawai one. Both use simulation close to the one described above. ... (http://cs.brown.edu/people/rtamassi/gdhandbook/chapters/force-directed.pdf) describes the difference like this: "Whereas the algorithm of Fruchterman-Reingold aim to keep adjacent vertices close to each other while ensuring that vertices are not too close to each other, Kamada and Kawai take graph theoretic approach [...]. In this model, the “perfect” drawing of a graph would be one inwhich the pair-wise geo-metric distances between the drawn vertices match the graphtheoretic pairwise distances"
+
+There is also another layout algorithm worth mentioning. Largre-Graph-Layout (...) is aimed specifically at drawing big (>1 million vertices) graphs. 
+
+(http://cs.brown.edu/people/rtamassi/gdhandbook/chapters/force-directed.pdf)
+
+
+As an example, here is the same graph plotted using different layouts. 
+
+### Dataset
+
+As for preparing the dataset for any further analysis requiring data in standard tabular format, some of the features listed above are not so important. That means that there 
+
+Methods presented below usually work better, if the graph is connected (???). That means that it is possible to go from each vertex to any other vertex. Also, I have made the graph undirected. That is, from information e.g. "Brodka is similar to Dawid Podsiadło", i got "Brodka and Dawid Podsiadło are similar". This step also makes some analyses easier. Also pairwise distances matrix should be simmetric. 
+
+
+### Methods 
+
+
+#### t-SNE
+
+T-distributed Stochastic Neighbor Embedding (t-SNE) is a method developed by ..., aimed specifically at visualising high dimensional, non-linear data in 2- or 3- dimensional space. Explanation of inner workings of the algorithm is beyond the scope of this paper. Basic intuition is the same as in Multi-Dimensional Scaling algorithm. That is, tring to learn a representation of high dimensional points to smaller space by trying to preserve pairwise distances. In t-SNE, the distance between points a and b is measured using conditional probability of point b belonging to the neighborhood of a, with assumption that probability follows normal distribution.
+
+
+ ... (http://www2.cs.arizona.edu/~kobourov/tsne-eurovis17.pdf) propose a graph layout using t-SNE.
+ 
+One should be aware of the fact that t-SNE is a very complex method, and as such, it has its pitfalls. ... Summarise them (https://distill.pub/2016/misread-tsne/).
+
+Below I have computed coordinates in 2-dimensional space using these methods. For t-SNE and MDS methods, distance matrix is needed. Natural distance metric for a network is shortest path between two vertices. Function ... induces Inf value when there is no such path for particular vertices. As MDS can't operate on infinite values, I am converting these for large number. Last step is to rescale all coordinates to [-1, 1] range.
+
+One thing worth mentioning is that MDS method is very slow. It's cubic complexity makes it unreasonable to run on even moderate datasets. For example, above computation took ~1 hour on my computer. This is for ~6 000 observations. Cubic running time means that if I would double the observation count, running the algorithm would take 8 times longer.
+
+As coordinates are obtained, next step is to plot the graph. 
+
+It can be seen that there are some outlying clusters connected weakly with the main point cloud, but the main part is obscured. To clear the picture up, I have made an interactive version avaliable under this link. It was impossible to include it in this document because this plot is quite big and it would slow down loading this page considerably.
+
+
+As the graph has its representation in lower-dimensional space, next analyses are fairly easy. From this point, curious researcher can go to prediction, visualisation, exploratory analysis or anything else he wishes. I have decided to run clustering analysis to improve the visualisation results. One consideration when using dimensionality reduction of any kind is which algorithm should be the final one. There is no algorithm-agnostic method of comparison between the results. In case of this analysis, there are two solutions. One would be to run some kind clustering, and check which method gives the biggest silhouette. This would be a way to go if the main goal would be clusters analysis. However, as my goal here is graph visualisation, I have picked the method giving the nicest graph. In my opinion the winner is ... . 
+
+I have run k-means algorithm. By criterion of maximum silhouette, the best number of clusters is ... . 
+
+Visualising the full graph looks good, but its interactive version is to resource-heavy. I have created a smaller version of the graph containing only cluster with the most popular polish artists, on which the user can inspect particular artists interactively.
+
+
+
+
+
