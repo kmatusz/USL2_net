@@ -43,13 +43,13 @@ coords_fr <- layout_with_fr(artist_graph, niter = 5000)
 set.seed(10)
 message("fr")
 message(Sys.time())
-coords_kk <- layout_with_kk(artist_graph)
+# coords_kk <- layout_with_kk(artist_graph)
 
 # LGL (for large graphs)
 set.seed(10)
 message("lgl")
 message(Sys.time())
-coords_lgl <- layout_with_lgl(artist_graph)
+coords_lgl <- layout_with_lgl(artist_graph, maxiter = 500)
 
 # Random
 set.seed(10)
@@ -74,7 +74,7 @@ coords_mds <- cmdscale(dist_graph)
 set.seed(10)
 message("tsne")
 message(Sys.time())
-coords_tsne <- tsne::tsne(dist_graph, max_iter = 2)
+coords_tsne <- Rtsne::Rtsne(dist_graph, is_distance = T, pca = F)
 message(Sys.time())
 
 save(coords_fr, 
@@ -82,6 +82,6 @@ save(coords_fr,
      coords_rand, 
      dist_graph, 
      coords_mds, 
-     #coords_tsne, 
+     coords_tsne, 
      file = "data/coords_computed.Rdata")
 
