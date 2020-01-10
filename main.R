@@ -22,6 +22,21 @@ edges <- tribble(~from, ~to,
 visNetwork(nodes, edges)
 
 
+# LAyouts comparison
+net <- sample_pa(100) 
+V(net)$size <- 8
+V(net)$frame.color <- NA
+V(net)$color <- "red"
+V(net)$label <- "" 
+E(net)$arrow.mode <- 0
+
+par(mfrow = c(1, 4))
+plot(net, layout = layout_randomly, main = "Random")
+plot(net, layout = layout_with_fr, main = "Fruchterman-Reingold")
+plot(net, layout = layout_with_kk, main = "Kamanda-Kawai")
+plot(net, layout = layout_with_lgl, main = "Large-Graph-Layout")
+
+
 # Prepare the dataset (load etc)----
 
 # Load the data

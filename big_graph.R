@@ -54,7 +54,8 @@ edges <- temp$edges
 nodes$size <- c(rep(10, 100), rep(2, 6518))
 nodes$label <- NA
 potential_colors <- c("rgba(118, 120, 237, 0.15)", "rgba(255, 0, 0, 0.7)")
-nodes$color <- potential_colors[1]
+# nodes$color <- potential_colors[1]
+nodes <- nodes %>% arrange(-playcount)
 nodes$color <- c(rep(potential_colors[2], 100), rep(potential_colors[1], 6518))
 
 visNetwork(nodes, edges, width = "100%", height = "600px",
