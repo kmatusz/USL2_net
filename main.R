@@ -22,7 +22,7 @@ edges <- tribble(~from, ~to,
 visNetwork(nodes, edges)
 
 
-# LAyouts comparison
+# LAyouts comparison ----
 net <- sample_pa(100) 
 V(net)$size <- 8
 V(net)$frame.color <- NA
